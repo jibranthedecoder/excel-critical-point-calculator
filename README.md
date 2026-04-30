@@ -10,6 +10,12 @@ This project shows how a spreadsheet-based calculation can be converted into a s
 
 The main calculator is in [`index.html`](index.html).
 
+## Original evidence
+
+The original exported task/report is included as PDF evidence:
+
+- [`Tehtävä 1 Kriittinen piste(1).pdf`](Teht%C3%A4v%C3%A4%201%20Kriittinen%20piste(1).pdf)
+
 ## Original values
 
 | Input | Value |
@@ -36,6 +42,7 @@ Critical point = fixed costs / (selling price − variable cost per unit)
 | File | Description |
 |---|---|
 | `index.html` | Interactive calculator converted from the Excel model |
+| `Tehtävä 1 Kriittinen piste(1).pdf` | Original PDF evidence exported from the spreadsheet task |
 
 ## Skills demonstrated
 
@@ -44,6 +51,7 @@ Critical point = fixed costs / (selling price − variable cost per unit)
 - HTML/CSS/JavaScript conversion
 - Interactive input handling
 - Responsive user interface design
+- Technical documentation
 
 ## License
 
