@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Critical Point Calculator | Excel Portfolio Project</title>
+  <meta name="description" content="Interactive HTML version of an Excel critical point calculator for break-even analysis." />
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: #f4f1ea;
+      --surface: #ffffff;
+      --surface-soft: #f8fafc;
+      --text: #111827;
+      --muted: #64748b;
+      --border: #e2e8f0;
+      --accent: #0f172a;
+      --positive: #047857;
+      --negative: #b91c1c;
+      --warning: #b45309;
+      --shadow: 0 20px 55px rgba(15, 23, 42, 0.08);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #0f141a;
+        --surface: #151b22;
+        --surface-soft: #111820;
+        --text: #f8fafc;
+        --muted: #a6b3c2;
+        --border: #2b3542;
+        --accent: #f8fafc;
+        --shadow: 0 20px 55px rgba(0, 0, 0, 0.28);
+      }
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top left, rgba(59, 130, 246, 0.09), transparent 34%), var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    main {
+      width: min(1160px, calc(100% - 2rem));
+      margin: 0 auto;
+      padding: clamp(1.5rem, 4vw, 3rem) 0;
+    }
+
+    .hero, .card {
+      border: 1px solid var(--border);
+      border-radius: 28px;
+      background: color-mix(in srgb, var(--surface) 92%, transparent);
+      box-shadow: var(--shadow);
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(280px, 0.85fr);
+      gap: clamp(1rem, 3vw, 2rem);
+      padding: clamp(1.4rem, 4vw, 2.5rem);
+      margin-bottom: 1rem;
+    }
+
+    .eyebrow {
+      margin: 0 0 0.6rem;
+      color: var(--muted);
+      font-size: 0.76rem;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    h1, h2, h3, p { margin-top: 0; }
+
+    h1 {
+      max-width: 12ch;
+      margin-bottom: 0.75rem;
+      font-size: clamp(2.4rem, 7vw, 5rem);
+      line-height: 0.94;
+      letter-spacing: -0.055em;
+    }
+
+    h2 {
+      margin-bottom: 0.75rem;
+      font-size: clamp(1.35rem, 3vw, 2rem);
+      line-height: 1.1;
+      letter-spacing: -0.035em;
+    }
+
+    .lead {
+      max-width: 64ch;
+      color: var(--muted);
+      font-size: clamp(1rem, 2vw, 1.15rem);
+    }
+
+    .summary-card {
+      display: grid;
+      align-content: start;
+      gap: 0.8rem;
+      padding: 1rem;
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      background: var(--surface-soft);
+    }
+
+    .critical-value {
+      font-size: clamp(2.1rem, 5vw, 3.4rem);
+      font-weight: 900;
+      line-height: 1;
+      letter-spacing: -0.05em;
+    }
+
+    .critical-label { color: var(--muted); }
+
+    .grid {
+      display: grid;
+      grid-template-columns: minmax(280px, 0.75fr) minmax(0, 1.25fr);
+      gap: 1rem;
+      align-items: start;
+    }
+
+    .card { padding: clamp(1rem, 2.5vw, 1.4rem); }
+
+    .inputs {
+      display: grid;
+      gap: 0.9rem;
+    }
+
+    label {
+      display: grid;
+      gap: 0.35rem;
+      font-weight: 700;
+    }
+
+    label span {
+      color: var(--muted);
+      font-size: 0.84rem;
+      font-weight: 700;
+    }
+
+    input {
+      width: 100%;
+      min-height: 3rem;
+      padding: 0.75rem 0.85rem;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: var(--surface);
+      color: var(--text);
+      font: inherit;
+      font-weight: 700;
+    }
+
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+    }
+
+    .kpi {
+      padding: 0.85rem;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      background: var(--surface-soft);
+    }
+
+    .kpi strong {
+      display: block;
+      font-size: clamp(1.15rem, 2.5vw, 1.6rem);
+      line-height: 1.1;
+    }
+
+    .kpi small {
+      color: var(--muted);
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+    }
+
+    table {
+      width: 100%;
+      min-width: 760px;
+      border-collapse: collapse;
+      background: var(--surface);
+    }
+
+    th, td {
+      padding: 0.72rem 0.8rem;
+      border-bottom: 1px solid var(--border);
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    th:first-child, td:first-child { text-align: left; }
+
+    th {
+      color: var(--muted);
+      background: var(--surface-soft);
+      font-size: 0.72rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    tbody tr:last-child td { border-bottom: 0; }
+    tbody tr.break-even-row { outline: 2px solid color-mix(in srgb, var(--positive) 50%, transparent); outline-offset: -2px; }
+    tbody tr.loss td.profit { color: var(--negative); font-weight: 800; }
+    tbody tr.zero td.profit { color: var(--warning); font-weight: 900; }
+    tbody tr.gain td.profit { color: var(--positive); font-weight: 800; }
+
+    .note {
+      margin: 1rem 0 0;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.7rem;
+      margin-top: 1rem;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 2.75rem;
+      padding: 0.7rem 1rem;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      color: var(--text);
+      text-decoration: none;
+      font-weight: 800;
+      background: var(--surface);
+    }
+
+    .button-primary {
+      border-color: var(--accent);
+      background: var(--accent);
+      color: var(--surface);
+    }
+
+    @media (max-width: 860px) {
+      .hero, .grid, .kpi-grid { grid-template-columns: 1fr; }
+      h1 { max-width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <section class="hero">
+      <div>
+        <p class="eyebrow">Excel / break-even analysis</p>
+        <h1>Critical Point Calculator</h1>
+        <p class="lead">Interactive HTML version of an Excel worksheet. The tool calculates revenue, fixed costs, variable costs, total costs, profit, profit percentage, and the break-even production amount.</p>
+        <div class="actions">
+          <a class="button button-primary" href="#calculator">Open calculator</a>
+          <a class="button" href="https://github.com/jibranthedecoder/excel-critical-point-calculator" target="_blank" rel="noopener">GitHub repository</a>
+        </div>
+      </div>
+      <aside class="summary-card" aria-live="polite">
+        <p class="eyebrow">Critical point</p>
+        <div class="critical-value" id="criticalUnits">10</div>
+        <p class="critical-label">units per month needed to cover total costs</p>
+        <p class="note" id="criticalExplanation">At 10 units/month the estimated profit is 0 €.</p>
+      </aside>
+    </section>
+
+    <section class="grid" id="calculator">
+      <article class="card">
+        <p class="eyebrow">Inputs</p>
+        <h2>Original spreadsheet values</h2>
+        <div class="inputs">
+          <label>Start amount <span>units/month</span><input id="startAmount" type="number" value="8" min="0" step="1" /></label>
+          <label>Step <span>units</span><input id="stepAmount" type="number" value="1" min="1" step="1" /></label>
+          <label>Machine selling price <span>€/unit</span><input id="price" type="number" value="890" min="0" step="10" /></label>
+          <label>Fixed costs <span>€/month</span><input id="fixedCost" type="number" value="1900" min="0" step="50" /></label>
+          <label>Manufacturing and material costs <span>€/unit</span><input id="variableCost" type="number" value="700" min="0" step="10" /></label>
+        </div>
+        <p class="note">Formula basis: revenue = units × selling price, variable costs = units × unit cost, total costs = fixed costs + variable costs, profit = revenue − total costs.</p>
+      </article>
+
+      <article class="card">
+        <p class="eyebrow">Calculated output</p>
+        <h2>Profit table</h2>
+        <div class="kpi-grid">
+          <div class="kpi"><strong id="unitMargin">190 €</strong><small>unit margin</small></div>
+          <div class="kpi"><strong id="exactBreakEven">10.00</strong><small>exact break-even</small></div>
+          <div class="kpi"><strong id="firstProfit">11</strong><small>first profitable unit</small></div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Units / month</th>
+                <th>Net sales</th>
+                <th>Fixed costs</th>
+                <th>Variable costs</th>
+                <th>Total costs</th>
+                <th>Profit</th>
+                <th>Profit %</th>
+              </tr>
+            </thead>
+            <tbody id="resultRows"></tbody>
+          </table>
+        </div>
+      </article>
+    </section>
+  </main>
+
+  <script>
+    const inputs = ['startAmount', 'stepAmount', 'price', 'fixedCost', 'variableCost'].map((id) => document.getElementById(id));
+    const rows = document.getElementById('resultRows');
+    const formatter = new Intl.NumberFormat('fi-FI', { maximumFractionDigits: 0 });
+    const percentFormatter = new Intl.NumberFormat('fi-FI', { style: 'percent', minimumFractionDigits: 1, maximumFractionDigits: 1 });
+
+    function money(value) {
+      return `${formatter.format(value)} €`;
+    }
+
+    function numberValue(id) {
+      return Number(document.getElementById(id).value || 0);
+    }
+
+    function calculate() {
+      const start = numberValue('startAmount');
+      const step = Math.max(1, numberValue('stepAmount'));
+      const price = numberValue('price');
+      const fixed = numberValue('fixedCost');
+      const variable = numberValue('variableCost');
+      const margin = price - variable;
+      const exact = margin > 0 ? fixed / margin : Infinity;
+      const firstProfit = Number.isFinite(exact) ? Math.floor(exact) + 1 : 0;
+      const breakEvenRounded = Number.isFinite(exact) ? Math.ceil(exact) : 0;
+
+      document.getElementById('unitMargin').textContent = money(margin);
+      document.getElementById('exactBreakEven').textContent = Number.isFinite(exact) ? exact.toFixed(2) : '—';
+      document.getElementById('firstProfit').textContent = Number.isFinite(exact) ? firstProfit : '—';
+      document.getElementById('criticalUnits').textContent = Number.isFinite(exact) ? breakEvenRounded : '—';
+
+      const profitAtCritical = breakEvenRounded * price - (fixed + breakEvenRounded * variable);
+      document.getElementById('criticalExplanation').textContent = Number.isFinite(exact)
+        ? `At ${breakEvenRounded} units/month the estimated profit is ${money(profitAtCritical)}.`
+        : 'The selling price must be higher than the variable cost to calculate a break-even point.';
+
+      rows.innerHTML = '';
+      for (let i = 0; i < 12; i += 1) {
+        const units = start + i * step;
+        const sales = units * price;
+        const variableCosts = units * variable;
+        const total = fixed + variableCosts;
+        const profit = sales - total;
+        const profitPercent = sales > 0 ? profit / sales : 0;
+        const tr = document.createElement('tr');
+        tr.className = profit < 0 ? 'loss' : profit === 0 ? 'zero break-even-row' : 'gain';
+        if (units === breakEvenRounded) tr.classList.add('break-even-row');
+        tr.innerHTML = `
+          <td>${formatter.format(units)}</td>
+          <td>${money(sales)}</td>
+          <td>${money(fixed)}</td>
+          <td>${money(variableCosts)}</td>
+          <td>${money(total)}</td>
+          <td class="profit">${money(profit)}</td>
+          <td>${percentFormatter.format(profitPercent)}</td>
+        `;
+        rows.appendChild(tr);
+      }
+    }
+
+    inputs.forEach((input) => input.addEventListener('input', calculate));
+    calculate();
+  </script>
+</body>
+</html>
