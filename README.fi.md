@@ -10,6 +10,12 @@ Tämä projekti näyttää, miten taulukkolaskentaan perustuva laskenta voidaan 
 
 Päätyökalu on tiedostossa [`index.html`](index.html).
 
+## Alkuperäinen todistusaineisto
+
+Alkuperäinen tehtävä-/raporttitiedosto on mukana PDF-muodossa:
+
+- [`Tehtävä 1 Kriittinen piste(1).pdf`](Teht%C3%A4v%C3%A4%201%20Kriittinen%20piste(1).pdf)
+
 ## Alkuperäiset arvot
 
 | Lähtötieto | Arvo |
@@ -36,6 +42,7 @@ Kriittinen piste = kiinteät kulut / (myyntihinta − muuttuva kulu per kappale)
 | Tiedosto | Kuvaus |
 |---|---|
 | `index.html` | Excel-mallista tehty interaktiivinen laskuri |
+| `Tehtävä 1 Kriittinen piste(1).pdf` | Alkuperäinen PDF-todiste Excel-tehtävästä |
 
 ## Osoitetut taidot
 
@@ -44,6 +51,7 @@ Kriittinen piste = kiinteät kulut / (myyntihinta − muuttuva kulu per kappale)
 - HTML/CSS/JavaScript-muunnos
 - interaktiivisten syötteiden käsittely
 - responsiivinen käyttöliittymäsuunnittelu
+- tekninen dokumentointi
 
 ## Lisenssi
 
